@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import re
-import datetime
 import time
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -95,6 +94,7 @@ def action(driver, step, interval = 1.5, config = None, check_dict = {},
         elif '清空' in event:
             element = find_element_by_tag(driver, aim)
             element.click()
+            ActionChains(driver).key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).send_keys(Keys.DELETE).perform()
             element.clear()
         
         elif '鍵盤' in event:
@@ -103,14 +103,22 @@ def action(driver, step, interval = 1.5, config = None, check_dict = {},
                 try:
                     if value.lower() == 'enter':
                         ActionChains(driver).send_keys(Keys.ENTER).perform()
+                    
                     elif value.lower() == 'delete':
                         ActionChains(driver).key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).send_keys(Keys.DELETE).perform()
+                    
                     elif value.lower() == 'tab':
                         ActionChains(driver).send_keys(Keys.TAB).perform()
+                    
                     time.sleep(interval)
                 except:
                     print('Keyboard not supported.')
-            
+        
+        
+        elif '右鍵' in event:
+            aim = cache.get(value[0], check_dict.get(value[0], value[0]))  
+            element = find_element_by_tag(driver, aim)
+            ActionChains(driver).context_click(element).perform()
             
             
         elif '前往' in event:
@@ -127,7 +135,7 @@ def action(driver, step, interval = 1.5, config = None, check_dict = {},
 
             action(driver, step = f'輸入「username」{account}'); time.sleep(interval)
             action(driver, step = f'輸入「password」{password}'); time.sleep(interval)
-            action(driver, step = '點擊「kc-login」')
+            action(driver, step = '點擊「登 入」')
             
         # 暫存資料
         elif '暫存' in event:
